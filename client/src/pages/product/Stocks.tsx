@@ -4,7 +4,7 @@ import MainLayout from "../layout/MainLayout";
 const Stocks = () => {
   const content = (
     <>
-        <StocksTable />
+        <StocksTable refreshStocks />
     </>
   );
 

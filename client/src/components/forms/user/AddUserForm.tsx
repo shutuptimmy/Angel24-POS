@@ -2,16 +2,23 @@ import React, { type ChangeEvent, type FormEvent, useEffect, useRef, useState, }
 import ErrorHandler from "../../handler/ErrorHandler";
 import type { UserFieldErrors } from "../../interfaces/user/UserFieldErrors";
 import UserService from "../../../services/UserService";
+import GenderService from "../../../services/GenderService";
+import type { Genders } from "../../interfaces/gender/Gender";
+import type { Roles } from "../../interfaces/role/Roles";
+import RoleService from "../../../services/RoleService";
 
 interface AddUserFormProps {
-    setSubmitForm: React.MutableRefObject<(() => void) | null>;
+    setSubmitForm: React.RefObject<(() => void) | null>;
     setLoadingStore: (loading: boolean) => void;
     onUserAdded: (message: string) => void;
 }
 
 const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFormProps) => {
     const [state, setState] = useState({
-        // loadingGenders: true,
+        loadingGenders: true,
+        genders: [] as Genders[],
+        loadingRoles: true,
+        roles: [] as Roles[],
         first_name: "",
         middle_name: "",
         last_name: "",
@@ -23,6 +30,7 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
         email: "",
         password: "",
         password_confirmation: "",
+        role: "",
         errors: {} as UserFieldErrors,
     });
 
@@ -34,12 +42,13 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
             last_name: "",
             suffix_name: "",
             birth_date: "",
-            // gender: "",
+            gender: "",
             address: "",
             contact_number: "",
             email: "",
             password: "",
             password_confirmation: "",
+            role: "",
             errors: {} as UserFieldErrors,
         }));
     };
@@ -52,31 +61,40 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
         }));
     };
 
-    // const handleLoadGenders = () => {
-    //     GenderService.loadGenders()
-    //         .then((res) => {
-    //             if (res.status === 200) {
-    //                 setState((prevState) => ({
-    //                     ...prevState,
-    //                     genders: res.data.genders,
-    //                 }));
-    //             } else {
-    //                 console.error(
-    //                     "Unexpected status error while loading genders: ",
-    //                     res.status
-    //                 );
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             ErrorHandler(error, null);
-    //         })
-    //         .finally(() => {
-    //             setState((prevState) => ({
-    //                 ...prevState,
-    //                 loadingGenders: false,
-    //             }));
-    //         });
-    // };
+    const handleLoadGenders = () => {
+        GenderService.loadGenders()
+            .then((res) => {
+                if (res.status === 200) {
+                    setState((prevState) => ({
+                        ...prevState,
+                        genders: res.data.genders,
+                    }));
+                } else { console.error("Unexpected status error while loading genders: ", res.status); }
+            }).catch((error) => { ErrorHandler(error, null); }).finally(() => {
+                setState((prevState) => ({
+                    ...prevState,
+                    loadingGenders: false,
+                }));
+            });
+    };
+
+    const HandleLoadRoles = () => {
+        RoleService.LoadRoles()
+            .then((res) => {
+                if (res.status === 200) {
+                    setState((prevState) => ({
+                        ...prevState,
+                        roles: res.data.roles,
+                    }));
+                } else { console.error("Unexpected status error while loading roles: ", res.status); }
+            }).catch((error) => { ErrorHandler(error, null); }).finally(() => {
+                setState((prevState) => ({
+                    ...prevState,
+                    loadingRoles: false,
+                }));
+            });
+    };
+
 
     const handleStoreUser = (e: FormEvent) => {
         e.preventDefault();
@@ -87,30 +105,22 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
                 if (res.status === 200) {
                     handleResetNecessaryFields();
                     onUserAdded(res.data.message);
-                } else {
-                    console.error(
-                        "Unexpected status error while storing user: ",
-                        res.status
-                    );
-                }
+                } else { console.error("Unexpected status error while storing user: ", res.status); }
             }).catch((error) => {
                 if (error.response.status === 422) {
                     setState((prevState) => ({
                         ...prevState,
                         errors: error.response.data.errors,
                     }));
-                } else {
-                    ErrorHandler(error, null);
-                }
-            }).finally(() => {
-                setLoadingStore(false);
-            });
+                } else { ErrorHandler(error, null); }
+            }).finally(() => { setLoadingStore(false); });
     };
 
     const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
-        // handleLoadGenders();
+        handleLoadGenders();
+        HandleLoadRoles();
 
         setSubmitForm.current = () => {
             if (formRef.current) {
@@ -133,15 +143,12 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
                                 </span>
                             )}
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="middle_name">Middle Name</label>
-                            <input type="text" className={`form-control ${state.errors.middle_name ? "is-invalid" : ""}`} name="middle_name" id="middle_name" value={state.middle_name} onChange={handleInputChange}/>
-                            {state.errors.middle_name && (
-                                <span className="text-danger">
-                                    {state.errors.middle_name[0]}
-                                </span>
-                            )}
+                            <input type="text" className={"form-control"} name="middle_name" id="middle_name" value={state.middle_name} onChange={handleInputChange}/>
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="last_name">Last Name</label>
                             <input type="text" className={`form-control ${state.errors.last_name ? "is-invalid" : ""}`} name="last_name" id="last_name" value={state.last_name} onChange={handleInputChange}/>
@@ -149,38 +156,25 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
                                 <span className="text-danger">{state.errors.last_name[0]}</span>
                             )}
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="suffix_name">Suffix Name</label>
-                            <input type="text" className={`form-control ${state.errors.suffix_name ? "is-invalid" : ""}`} name="suffix_name" id="suffix_name" value={state.suffix_name} onChange={handleInputChange}/>
-                            {state.errors.suffix_name && (
-                                <span className="text-danger">
-                                    {state.errors.suffix_name[0]}
-                                </span>
-                            )}
+                            <input type="text" className={"form-control"} name="suffix_name" id="suffix_name" value={state.suffix_name} onChange={handleInputChange}/>
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="birth_date">Birth Date</label>
                             <input type="date" className={`form-control ${state.errors.birth_date ? "is-invalid" : ""}`} name="birth_date" id="birth_date" value={state.birth_date} onChange={handleInputChange}/>
                             {state.errors.birth_date && (
                                 <span className="text-danger">
-                                    {state.errors.birth_date && (
-                                        <span className="text-danger">
-                                            {state.errors.birth_date[0]}
-                                        </span>
-                                    )}
+                                    {state.errors.birth_date[0]}
                                 </span>
                             )}
                         </div>
-                        {/* <div className="mb-3">
+
+                        <div className="mb-3">
                             <label htmlFor="gender">Gender</label>
-                            <select
-                                className={`form-select ${state.errors.gender ? "is-invalid" : ""
-                                    }`}
-                                name="gender"
-                                id="gender"
-                                value={state.gender}
-                                onChange={handleInputChange}
-                            >
+                            <select className={`form-select ${state.errors.gender ? "is-invalid" : ""}`} name="gender" id="gender" value={state.gender} onChange={handleInputChange}>
                                 <option value="">Select Gender</option>
                                 {state.loadingGenders ? (
                                     <option value="">Loading...</option>
@@ -195,8 +189,9 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
                             {state.errors.gender && (
                                 <span className="text-danger">{state.errors.gender[0]}</span>
                             )}
-                        </div> */}
+                        </div>
                     </div>
+
                     <div className="col-md-6">
                         <div className="mb-3">
                             <label htmlFor="address">Address</label>
@@ -205,70 +200,59 @@ const AddUserForm = ({ setSubmitForm, setLoadingStore, onUserAdded }: AddUserFor
                                 <span className="text-danger">{state.errors.address[0]}</span>
                             )}
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="contact_number">Contact Number</label>
-                            <input
-                                type="text"
-                                className={`form-control ${state.errors.contact_number ? "is-invalid" : ""
-                                    }`}
-                                name="contact_number"
-                                id="contact_number"
-                                value={state.contact_number}
-                                onChange={handleInputChange}
-                            />
+                            <input type="text" className={`form-control ${state.errors.contact_number ? "is-invalid" : ""}`} name="contact_number" id="contact_number" value={state.contact_number} onChange={handleInputChange}/>
                             {state.errors.contact_number && (
                                 <span className="text-danger">
                                     {state.errors.contact_number[0]}
                                 </span>
                             )}
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="email">Email</label>
-                            <input
-                                type="text"
-                                className={`form-control ${state.errors.email ? "is-invalid" : ""
-                                    }`}
-                                name="email"
-                                id="email"
-                                value={state.email}
-                                onChange={handleInputChange}
-                            />
+                            <input type="text" className={`form-control ${state.errors.email ? "is-invalid" : ""}`} name="email" id="email" value={state.email} onChange={handleInputChange}/>
                             {state.errors.email && (
                                 <span className="text-danger">{state.errors.email[0]}</span>
                             )}
                         </div>
+
                         <div className="mb-3">
                             <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                className={`form-control ${state.errors.password ? "is-invalid" : ""
-                                    }`}
-                                name="password"
-                                id="password"
-                                value={state.password}
-                                onChange={handleInputChange}
-                            />
+                            <input type="password" className={`form-control ${state.errors.password ? "is-invalid" : ""}`} name="password" id="password" value={state.password} onChange={handleInputChange}/>
                             {state.errors.password && (
                                 <span className="text-danger">{state.errors.password[0]}</span>
                             )}
                         </div>
+
                         <div className="mb-3">
-                            <label htmlFor="password_confirmation">
-                                Password Confirmation
-                            </label>
-                            <input
-                                type="password"
-                                className={`form-control ${state.errors.password_confirmation ? "is-invalid" : ""
-                                    }`}
-                                name="password_confirmation"
-                                id="password_confirmation"
-                                value={state.password_confirmation}
-                                onChange={handleInputChange}
-                            />
+                            <label htmlFor="password_confirmation">Password Confirmation</label>
+                            <input type="password" className={`form-control ${state.errors.password_confirmation ? "is-invalid" : ""}`} name="password_confirmation" id="password_confirmation" value={state.password_confirmation} onChange={handleInputChange}/>
                             {state.errors.password_confirmation && (
                                 <span className="text-danger">
                                     {state.errors.password_confirmation[0]}
                                 </span>
+                            )}
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="role">User Role</label>
+                            <select className={`form-select ${state.errors.role ? "is-invalid" : ""}`} name="role" id="role" value={state.role} onChange={handleInputChange}>
+                                <option value="">Select Role</option>
+                                {state.loadingRoles ? (
+                                    <option value="">Loading...</option>
+                                ) : (
+                                    state.roles.map((role, index) => (
+                                        <option value={role.role_id} key={index}>
+                                            {role.role}
+                                        </option>
+                                    ))
+                                )}
+                            </select>
+                            {state.errors.role && (
+                                <span className="text-danger">{state.errors.role[0]}</span>
                             )}
                         </div>
                     </div>

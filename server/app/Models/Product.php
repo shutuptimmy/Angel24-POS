@@ -17,5 +17,6 @@ class Product extends Model
         'product_stocks',
         'product_min_threshold',
         'product_sku',
+        'is_deleted',
     ];
 }

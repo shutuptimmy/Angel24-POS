@@ -66,7 +66,7 @@ const DeleteProductModal = ({showModal, product, onRefreshProducts, onClose}: De
                                         <SmolSpinner /> Deleting...
                                     </>
                                 ) : (
-                                    "Yes, delete"
+                                    "Yes, I understand"
                                 )}
                         </button>
                     </div>

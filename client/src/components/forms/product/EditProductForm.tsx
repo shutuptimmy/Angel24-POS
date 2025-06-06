@@ -6,7 +6,7 @@ import type { Products } from "../../interfaces/product/Products";
 
 interface EditProductFormProps {
   product: Products | null;
-  setSubmitForm: React.MutableRefObject<(() => void) | null>;
+  setSubmitForm: React.RefObject<(() => void) | null>;
   setLoadingUpdate: (loading: boolean) => void;
   onUpdatedProduct: (message: string) => void;
 }

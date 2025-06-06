@@ -12,6 +12,7 @@ class UserController extends Controller
     public function loadUsers()
     {
         $users = User::with(['gender'])
+            ->with(['role'])
             ->where('tbl_users.is_deleted', false)
             ->get();
 
@@ -34,6 +35,7 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('tbl_users', 'email')],
             'password' => ['required', 'confirmed', 'min:8', 'max:15'],
             'password_confirmation' => ['required', 'min:8', 'max:15'],
+            'role' => ['required']
         ]);
 
         $age = date_diff(date_create($validated['birth_date']), date_create('now'))->y;
@@ -49,7 +51,8 @@ class UserController extends Controller
             'address' => $validated['address'],
             'contact_number' => $validated['contact_number'],
             'email' => $validated['email'],
-            'password' => bcrypt($validated['password'])
+            'password' => bcrypt($validated['password']),
+            'role_id' => $validated['role']
         ]);
 
         return response()->json([
@@ -69,6 +72,7 @@ class UserController extends Controller
             'address' => ['required'],
             'contact_number' => ['required'],
             'email' => ['required', 'email', Rule::unique('tbl_users', 'email')->ignore($user)],
+            'role' => ['required'],
         ]);
 
         $age = date_diff(date_create($validated['birth_date']), date_create('now'))->y;
@@ -84,10 +88,12 @@ class UserController extends Controller
             'address' => $validated['address'],
             'contact_number' => $validated['contact_number'],
             'email' => $validated['email'],
+            'role_id' => $validated['role'],
+
         ]);
 
         return response()->json([
-            'message' => 'User Successfully Updated.'
+            'message' => 'User\'s details successfully Updated.'
         ], 200);
     }
 
@@ -98,7 +104,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'User Annihilated.'
+            'message' => 'User has been deleted.'
         ], 200);
     }
 }

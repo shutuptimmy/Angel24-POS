@@ -1,11 +1,11 @@
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, { type FormEvent, useEffect, useRef, useState } from "react";
 import UserService from "../../../services/UserService";
-import ErrorHandler from "../../../handler/ErrorHandler";
-import { Users } from "../../../interfaces/Users";
+import ErrorHandler from "../../handler/ErrorHandler";
+import type { Users } from "../../interfaces/user/Users";
 
 interface DeleteUserFormProps {
     user: Users | null;
-    setSubmitForm: React.MutableRefObject<(() => void) | null>;
+    setSubmitForm: React.RefObject<(() => void) | null>;
     setLoadingDestroy: (loading: boolean) => void;
     onDeletedUser: (message: string) => void;
 }

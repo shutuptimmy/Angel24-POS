@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('product_stocks');
             $table->integer('product_min_threshold')->nullable();
             $table->string('product_sku')->unique();
+            $table->tinyInteger('is_deleted')->default(false);
             $table->timestamps();
         });
     }

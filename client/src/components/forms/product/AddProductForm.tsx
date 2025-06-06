@@ -14,9 +14,9 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
     loadingStore: false,
     product_sku: '',
     product_name: '',
-    product_price: '',
-    product_stocks: '',
-    product_min_threshold: '',
+    product_price: 0,
+    product_stocks: 0,
+    product_min_threshold: 0,
     errors: {} as ProductFieldErrors
   });
 
@@ -25,9 +25,9 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
       ...prevstate,
       product_sku: '',
       product_name: '',
-      product_price: '',
-      product_stocks: '',
-      product_min_threshold: '',
+      product_price: 0,
+      product_stocks: 0,
+      product_min_threshold: 0,
       errors: {} as ProductFieldErrors
     }));
   }
@@ -87,7 +87,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
             <input type="text" className={`form-control ${state.errors.product_sku ? "is-invalid" : ""}`} id="product_sku" name="product_sku" value={state.product_sku} onChange={HandleInputChange}/>
             <div className="form-text">Every product should be unique for barcode scanning.</div>
             {state.errors.product_sku && (
-              <p className="text-danger">{state.errors.product_sku[0]}</p>
+              <span className="text-danger">{state.errors.product_sku[0]}</span>
             )}
           </div>
 
@@ -97,7 +97,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
               <span className="input-group-text" id="Peso">₱</span>
               <input type="text" className="form-control" id="product_price" name="product_price" aria-describedby="Peso" value={state.product_price} onChange={HandleInputChange}/>
               {state.errors.product_price && (
-              <p className="text-danger">{state.errors.product_price[0]}</p>
+              <span className="text-danger">{state.errors.product_price[0]}</span>
             )}
             </div>
           </div>
@@ -106,7 +106,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
             <label htmlFor="product_name" className="form-label">Name/Description</label>
             <input type="text" className="form-control" id="product_name" name="product_name" value={state.product_name} onChange={HandleInputChange}/>
             {state.errors.product_name && (
-              <p className="text-danger">{state.errors.product_name[0]}</p>
+              <span className="text-danger">{state.errors.product_name[0]}</span>
             )}
           </div>
 
@@ -114,7 +114,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
             <label htmlFor="product_stocks" className="form-label">Available Stocks</label>
             <input type="text" className="form-control" id="product_stocks" name="product_stocks" value={state.product_stocks} onChange={HandleInputChange}/>
             {state.errors.product_stocks && (
-              <p className="text-danger">{state.errors.product_stocks[0]}</p>
+              <span className="text-danger">{state.errors.product_stocks[0]}</span>
             )}
           </div>
 
@@ -122,7 +122,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
             <label htmlFor="product_min_threshold" className="form-label">Minimum Threshold</label>
             <input type="text" className="form-control" id="product_min_threshold" name="product_min_threshold" value={state.product_min_threshold} onChange={HandleInputChange}/>
             {state.errors.product_min_threshold && (
-              <p className="text-danger">{state.errors.product_min_threshold[0]}</p>
+              <span className="text-danger">{state.errors.product_min_threshold[0]}</span>
             )}
           </div>
         </div>

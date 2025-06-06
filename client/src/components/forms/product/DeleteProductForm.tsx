@@ -6,7 +6,7 @@ import type React from "react";
 
 interface DeleteProductFormProps {
     product: Products | null;
-    setSubmitForm: React.MutableRefObject<(() => void) | null>;
+    setSubmitForm: React.RefObject<(() => void) | null>;
     setLoadingDelete: (loading: boolean) => void;
     onDeletedProduct: (message: string) => void;
 }

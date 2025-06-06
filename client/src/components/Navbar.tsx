@@ -16,7 +16,7 @@ const Navbar = () => {
             title: "Reports & Statistics",
         },
         {
-            route: "/account",
+            route: "/accounts",
             title: "Account Management",
         },
     ];

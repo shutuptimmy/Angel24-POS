@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import DeleteUserForm from "../../forms/user/DeleteUserForm";
 import AlertMessage from "../../AlertMessage";
 import SmolSpinner from "../../SmolSpinner";
-import { Users } from "../../../interfaces/Users";
+import type { Users } from "../../interfaces/user/Users";
 
 interface DeleteUserModalProps {
     showModal: boolean;
@@ -71,7 +71,7 @@ const DeleteUserModal = ({
                             <button type="submit" className="btn btn-danger"disabled={loadingDestroy} onClick={() => submitFormRef.current?.()}>
                                 {loadingDestroy ? (
                                     <>
-                                        <SmolSpinner /> Execution in process...
+                                        <SmolSpinner /> Removing user from the database...
                                     </>
                                 ) : (
                                     "Delete User"

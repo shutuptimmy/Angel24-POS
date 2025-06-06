@@ -23,11 +23,12 @@ class User extends Authenticatable
         'suffix_name',
         'age',
         'birth_date',
-        // 'gender_id',
+        'gender_id',
         'address',
         'contact_number',
         'email',
         'password',
+        'role_id',
         'is_deleted',
     ];
 
@@ -35,8 +36,13 @@ class User extends Authenticatable
         'password',
     ];
 
-    // public function gender(): BelongsTo
-    // {
-    //     return $this->belongsTo(Gender::class, 'gender_id', 'gender_id');
-    // }
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class, 'gender_id', 'gender_id');
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
 }

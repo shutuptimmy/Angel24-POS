@@ -19,12 +19,22 @@ return new class extends Migration
             $table->string('suffix_name', 55)->nullable();
             $table->integer('age');
             $table->date('birth_date');
+            $table->unsignedBigInteger('gender_id');
             $table->string('address', 255);
             $table->string('contact_number', 55);
             $table->string('email', 55)->unique();
             $table->string('password', 255);
+            $table->unsignedBigInteger('role_id');
             $table->tinyInteger('is_deleted')->default(false);
             $table->timestamps();
+
+            $table->foreign('gender_id')
+                ->references('gender_id')
+                ->on('tbl_genders');
+
+            $table->foreign('role_id')
+                ->references('role_id')
+                ->on('tbl_roles');
         });
     }
 

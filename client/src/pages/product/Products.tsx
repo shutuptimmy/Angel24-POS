@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddProductModal from "../../components/modals/product/AddProductModal";
 import ProductsTable from "../../components/tables/ProductsTable";
 import MainLayout from "../layout/MainLayout";
@@ -31,6 +31,9 @@ const Products = () => {
       setOpenDeleteProductModal(false);
   };
 
+  useEffect(() => {
+  document.title = "Inventory Management";
+  }, [])
 
   const content = (
     <>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Users } from "../../../interfaces/Users";
-import UserService from "../../../services/UserService";
-import ErrorHandler from "../../../handler/ErrorHandler";
-import Spinner from "../../Spinner";
+import type { Users } from "../interfaces/user/Users";
+import UserService from "../../services/UserService";
+import ErrorHandler from "../handler/ErrorHandler";
+import Spinner from "../Spinner";
 
 interface UsersTableProps {
     refreshUsers: boolean;
@@ -68,13 +68,13 @@ const UsersTable = ({ refreshUsers, onEditUser, onDeleteUser }: UsersTableProps)
             <table className="table table-hover">
                 <thead>
                     <tr>
-                        <th>No.</th>
                         <th>Full Name</th>
+                        <th>Email</th>
                         <th>Gender</th>
                         <th>Birthdate</th>
                         <th>Address</th>
                         <th>Contact Number</th>
-                        <th>Email</th>
+                        <th>Role</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -88,13 +88,13 @@ const UsersTable = ({ refreshUsers, onEditUser, onDeleteUser }: UsersTableProps)
                     ) : state.users.length > 0 ? (
                         state.users.map((user, index) => (
                             <tr className="align-middle" key={index}>
-                                <td>{index + 1}</td>
                                 <td>{handleUsersFullName(user)}</td>
+                                <td>{user.email}</td>
                                 <td>{user.gender.gender}</td>
                                 <td>{user.birth_date}</td>
                                 <td>{user.address}</td>
                                 <td>{user.contact_number}</td>
-                                <td>{user.email}</td>
+                                <td className="fw-bold">{user.role.role}</td>
                                 <td>
                                     <div className="btn-group">
                                         <button type="button" className="btn btn-success" onClick={() => onEditUser(user)}>

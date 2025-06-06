@@ -1,10 +1,10 @@
 import { useState } from "react";
-import AddUserModal from "../../components/modals/user/AddUserModal";
-import EditUserModal from "../../components/modals/user/EditUserModal"
-import MainLayout from "../layout/MainLayout";
-import UsersTable from "../../components/tables/user/UsersTable";
-import type { Users } from "../../interfaces/Users";
-import DeleteUserModal from "../../components/modals/user/DeleteUserModal";
+import AddUserModal from "../components/modals/user/AddUserModal";
+import EditUserModal from "../components/modals/user/EditUserModal"
+import MainLayout from "../pages/layout/MainLayout";
+import UsersTable from "../components/tables/UsersTable";
+import type { Users } from "../components/interfaces/user/Users";
+import DeleteUserModal from "../components/modals/user/DeleteUserModal";
 
 const Users = () => {
     const [refreshUsers, setRefreshUsers] = useState(false);
@@ -52,13 +52,7 @@ const Users = () => {
             />
 
             <div className="d-flex justify-content-end mt-2">
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => setOpenAddUserModal(true)}
-                >
-                    Add User bro
-                </button>
+                <button type="button" className="btn btn-primary" onClick={() => setOpenAddUserModal(true)}>Add New User</button>
             </div>
             <UsersTable refreshUsers={refreshUsers} onEditUser={handleOpenEditUserModal} onDeleteUser={handleOpenDeleteUserModal} />
         </>

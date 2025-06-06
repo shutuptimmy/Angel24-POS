@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function LoadProducts()
     {
-        $products = Product::all();
+        $products = Product::where('tbl_products.is_deleted', false)->get();
         return response()->json([
             'products' => $products
         ], 200);
@@ -60,6 +60,17 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => 'Product Successfully Updated.'
+        ], 200);
+    }
+
+    public function DeleteProduct(Product $product)
+    {
+        $product->update([
+            'is_deleted' => true
+        ]);
+
+        return response()->json([
+            'message' => 'The product has been removed.'
         ], 200);
     }
 }
