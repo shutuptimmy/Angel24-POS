@@ -16,9 +16,9 @@ class RoleController extends Controller
         ], 200);
     }
 
-    public function GetRole($userRoleId)
+    public function GetRole($roleId)
     {
-        $role = Role::find($userRoleId);
+        $role = Role::find($roleId);
         return response()->json([
             'role' => $role
         ], 200);

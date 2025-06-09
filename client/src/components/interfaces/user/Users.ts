@@ -1,4 +1,4 @@
-import type { Genders } from "../gender/Gender";
+import type { Genders } from "../gender/Genders";
 import type { Roles } from "../role/Roles";
 
 export interface Users {

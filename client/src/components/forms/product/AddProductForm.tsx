@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "r
 import ProductService from "../../../services/ProductService";
 import ErrorHandler from "../../handler/ErrorHandler";
 import type {ProductFieldErrors} from "../../interfaces/product/ProductFieldErrors";
+import type { Categories } from "../../interfaces/category/Categories";
+import CategoryService from "../../../services/CategoryService";
 
 interface AddProductFormProps {
   setSubmitForm: React.RefObject<(() => void) | null>;
@@ -10,41 +12,105 @@ interface AddProductFormProps {
 }
 
 const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddProductFormProps) => {
+
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [state, setState] = useState({
     loadingStore: false,
+    loadingCategories: true,
+    categories: [] as Categories[],
     product_sku: '',
     product_name: '',
+    category: '',
     product_price: 0,
     product_stocks: 0,
     product_min_threshold: 0,
+    product_image: null as File | null,
     errors: {} as ProductFieldErrors
   });
+
 
   const HandleResetFields = () => {
     setState((prevstate) => ({
       ...prevstate,
       product_sku: '',
       product_name: '',
+      category: '',
       product_price: 0,
       product_stocks: 0,
       product_min_threshold: 0,
+      product_image: null,
       errors: {} as ProductFieldErrors
+      
     }));
+  
+    setImagePreviewUrl(null);
+    const imageInput = document.getElementById('product_image') as HTMLInputElement;
+    if (imageInput) {
+      imageInput.value = '';
+    }
   }
 
-  const HandleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
+  const HandleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setState((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-  }
+  };
 
+  const HandleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+      setState((prevState) => ({
+        ...prevState,
+        [name]: file,
+      }));
+      setImagePreviewUrl(URL.createObjectURL(file));
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        [name]: null,
+      }));
+      setImagePreviewUrl(null);
+    }
+  };
+
+  const HandleLoadCategories = () => {
+    CategoryService.LoadCategories()
+        .then((res) => {
+            if (res.status === 200) {
+                setState((prevState) => ({
+                    ...prevState,
+                    categories: res.data.categories,
+                }));
+            } else { console.error("Unexpected status error while loading categories: ", res.status); }
+        }).catch((error) => { ErrorHandler(error, null); }).finally(() => {
+            setState((prevState) => ({
+                ...prevState,
+                loadingCategories: false,
+            }));
+        });
+  };
+    
   const HandleStoreProduct = (e: FormEvent) => {
     e.preventDefault();
     setLoadingStore(true);
 
-    ProductService.StoreProduct(state).then((res) => {
+    const formData = new FormData();
+    formData.append('product_sku', state.product_sku);
+    formData.append('product_name', state.product_name);
+    formData.append('product_price', state.product_price.toString());
+    formData.append('category', state.category);
+    formData.append('product_stocks', state.product_stocks.toString());
+    formData.append('product_min_threshold', state.product_min_threshold.toString());
+
+    if (state.product_image) {
+      formData.append('product_image', state.product_image);
+    }
+
+    ProductService.StoreProduct(formData).then((res) => {
       if (res.status == 200) {
         HandleResetFields();
         onProductAdded(res.data.message);
@@ -65,17 +131,27 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
       setLoadingStore(false);
       }
     );
-};
+  };
 
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
+    HandleLoadCategories();
+
     setSubmitForm.current = () => {
       if (formRef.current) {
         formRef.current.requestSubmit();
       }
     }
   }, [setSubmitForm])
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
 
   return (
     <>
@@ -110,6 +186,25 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
             )}
           </div>
 
+          <div className="mb-3">
+            <label htmlFor="category">Category</label>
+            <select className={`form-select ${state.errors.category ? "is-invalid" : ""}`} name="category" id="category" value={state.category} onChange={HandleInputChange}>
+                <option value="">Select category</option>
+                {state.loadingCategories ? (
+                    <option value="">Loading...</option>
+                ) : (
+                    state.categories.map((category, index) => (
+                        <option value={category.category_id} key={index}>
+                            {category.category}
+                        </option>
+                    ))
+                )}
+            </select>
+            {state.errors.category && (
+                <span className="text-danger">{state.errors.category[0]}</span>
+            )}
+          </div>
+
           <div className="col-3 mb-3">
             <label htmlFor="product_stocks" className="form-label">Available Stocks</label>
             <input type="text" className="form-control" id="product_stocks" name="product_stocks" value={state.product_stocks} onChange={HandleInputChange}/>
@@ -125,6 +220,31 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
               <span className="text-danger">{state.errors.product_min_threshold[0]}</span>
             )}
           </div>
+
+          <div className="mb-3">
+              <label htmlFor="product_image" className="form-label">Product Image</label>
+              <input
+                type="file" // Important: type="file"
+                className={`form-control ${state.errors.product_image ? "is-invalid" : ""}`}
+                id="product_image"
+                name="product_image"
+                accept="image/*" // Suggests image files
+                onChange={HandleFileInputChange} // Use the same handler
+              />
+              {state.errors.product_image && (
+                <span className="text-danger">{state.errors.product_image[0]}</span>
+              )}
+              {imagePreviewUrl && (
+                <div className="mt-2">
+                  <img
+                    src={imagePreviewUrl}
+                    alt="Product Preview"
+                    style={{ maxWidth: '200px', maxHeight: '200px', border: '1px solid #ddd', padding: '5px' }}
+                    className="img-thumbnail"
+                  />
+                </div>
+              )}
+            </div>
         </div>
       </div>
     </form>

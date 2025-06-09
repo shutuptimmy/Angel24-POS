@@ -3,7 +3,7 @@ import type { UserFieldErrors } from "../../interfaces/user/UserFieldErrors";
 import ErrorHandler from "../../../components/handler/ErrorHandler";
 import type { Users } from "../../interfaces/user/Users";
 import UserService from "../../../services/UserService";
-import type { Genders } from "../../interfaces/gender/Gender";
+import type { Genders } from "../../interfaces/gender/Genders";
 import GenderService from "../../../services/GenderService";
 import type React from "react";
 import type { Roles } from "../../interfaces/role/Roles";

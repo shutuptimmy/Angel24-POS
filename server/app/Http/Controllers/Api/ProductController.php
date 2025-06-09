@@ -4,14 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
     public function LoadProducts()
     {
-        $products = Product::where('tbl_products.is_deleted', false)->get();
+        $products = Product::with(['category'])
+            ->where('tbl_products.is_deleted', false)
+            ->get();
+
         return response()->json([
             'products' => $products
         ], 200);
@@ -20,19 +25,29 @@ class ProductController extends Controller
     public function StoreProduct(Request $request)
     {
         $validated = $request->validate([
+            'product_sku'           => ['required', Rule::unique('tbl_products', 'product_sku')],
             'product_name'          => ['required', 'max: 20'],
             'product_price'         => ['required'],
+            'category'              => ['required'],
+            'product_image'         => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'product_stocks'        => ['required'],
             'product_min_threshold' => ['nullable'],
-            'product_sku'           => ['required', Rule::unique('tbl_products', 'product_sku')]
         ]);
 
+        $image = null;
+
+        if ($request->hasFile('product_image')) {
+            $image = $request->file('product_image')->store('products', 'public');
+        }
+
         Product::create([
+            'product_sku'           => $validated['product_sku'],
             'product_name'          => $validated['product_name'],
             'product_price'         => $validated['product_price'],
+            'category_id'           => $validated['category'],
+            'product_image'         => $image,
             'product_stocks'        => $validated['product_stocks'],
             'product_min_threshold' => $validated['product_min_threshold'],
-            'product_sku'           => $validated['product_sku']
         ]);
 
         return response()->json([
@@ -43,21 +58,41 @@ class ProductController extends Controller
     public function UpdateProduct(Request $request, Product $product)
     {
         $validated = $request->validate([
+            'product_sku' => ['required', Rule::unique('tbl_products', 'product_sku')->ignore($product->product_id, 'product_id')],
             'product_name'          => ['required', 'max: 20'],
             'product_price'         => ['required'],
+            'category'              => ['required'],
+            'product_image'         => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'product_stocks'        => ['required'],
             'product_min_threshold' => ['nullable'],
-            'product_sku' => ['required', Rule::unique('tbl_products', 'product_sku')->ignore($product)],
+            'remove_image'          => ['boolean', 'nullable'],
         ]);
 
-        $product->update([
+        $updateProduct = [
+            'product_sku'           => $validated['product_sku'],
             'product_name'          => $validated['product_name'],
             'product_price'         => $validated['product_price'],
+            'category_id'           => $validated['category'],
             'product_stocks'        => $validated['product_stocks'],
             'product_min_threshold' => $validated['product_min_threshold'],
-            'product_sku'           => $validated['product_sku']
-        ]);
+        ];
 
+
+        if ($request->hasFile('product_image')) {
+            if ($product->product_image) {
+                Storage::disk('public')->delete($product->product_image);
+            }
+
+            $image = $request->file('product_image')->store('products', 'public');
+            $updateProduct['product_image'] = $image;
+        } elseif (isset($validated['remove_image']) && $validated['remove_image']) {
+            if ($product->product_image) {
+                Storage::disk('public')->delete($product->product_image);
+            }
+            $updateProduct['product_image'] = null;
+        }
+
+        $product->update($updateProduct);
         return response()->json([
             'message' => 'Product Successfully Updated.'
         ], 200);
@@ -65,6 +100,14 @@ class ProductController extends Controller
 
     public function DeleteProduct(Product $product)
     {
+        if ($product->product_image) {
+            $image = $product->product_image;
+
+            if (Storage::disk('public')->exists($image)) {
+                Storage::disk('public')->delete($image);
+            }
+        }
+
         $product->update([
             'is_deleted' => true
         ]);

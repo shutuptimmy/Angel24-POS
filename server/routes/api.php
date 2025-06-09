@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GenderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RoleController;
@@ -19,9 +20,14 @@ Route::controller(GenderController::class)->group(function () {
     Route::get('/getGender/{genderId}', 'getGender');
 });
 
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('/LoadCategories', 'LoadCategories');
+    Route::get('/GetCategory/{categoryId}', 'GetCategory');
+});
+
 Route::controller(RoleController::class)->group(function () {
     Route::get('/LoadRoles', 'LoadRoles');
-    Route::get('/GetRole/{userRoleId}', 'GetRole');
+    Route::get('/GetRole/{roleId}', 'GetRole');
 });
 
 Route::controller(UserController::class)->group(function () {

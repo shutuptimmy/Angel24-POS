@@ -13,12 +13,16 @@ const ProductService = {
         return AxiosInstance.get(`/GetProduct/${productId}`).then((response) => response).catch((error) => { throw error; });
     },
 
-    StoreProduct: async (data: any) => {
-        return AxiosInstance.post('/StoreProduct', data).then((response) => response).catch((error) => {throw error});
+    StoreProduct: async (data: FormData) => {
+        return AxiosInstance.post('/StoreProduct', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        }).then((response) => response).catch((error) => {throw error});
     },
 
-    UpdateProduct: async (productId: number, data: any) => {
-      return AxiosInstance.put(`/UpdateProduct/${productId}`, data).then((response) => response).catch((error) => { throw error; });
+    UpdateProduct: async (productId: number, data: FormData): Promise<any> => {
+      return AxiosInstance.post(`/UpdateProduct/${productId}`, data).then((response) => response).catch((error) => { throw error; });
   },
 
     DeleteProduct: async (productId: number) => {

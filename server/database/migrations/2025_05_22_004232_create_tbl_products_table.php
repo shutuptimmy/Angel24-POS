@@ -13,13 +13,19 @@ return new class extends Migration
     {
         Schema::create('tbl_products', function (Blueprint $table) {
             $table->id('product_id');
+            $table->string('product_sku')->unique();
             $table->string('product_name', 55);
-            $table->integer('product_price');
+            $table->unsignedBigInteger('category_id');
+            $table->float('product_price', 8, 2);
+            $table->string('product_image')->nullable();
             $table->integer('product_stocks');
             $table->integer('product_min_threshold')->nullable();
-            $table->string('product_sku')->unique();
             $table->tinyInteger('is_deleted')->default(false);
             $table->timestamps();
+
+            $table->foreign('category_id')
+                ->references('category_id')
+                ->on('tbl_categories');
         });
     }
 

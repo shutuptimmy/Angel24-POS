@@ -3,7 +3,7 @@ import ErrorHandler from "../../handler/ErrorHandler";
 import type { UserFieldErrors } from "../../interfaces/user/UserFieldErrors";
 import UserService from "../../../services/UserService";
 import GenderService from "../../../services/GenderService";
-import type { Genders } from "../../interfaces/gender/Gender";
+import type { Genders } from "../../interfaces/gender/Genders";
 import type { Roles } from "../../interfaces/role/Roles";
 import RoleService from "../../../services/RoleService";
 

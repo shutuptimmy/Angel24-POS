@@ -14,8 +14,9 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
     const [state, setState] = useState({
         loadingProducts: true,
         products: [] as Products[]
-    })
+    });
 
+    
     const HandleLoadProducts = () => {
         ProductService.LoadProducts().then((res) => {
             if (res.status === 200) {
@@ -33,16 +34,28 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
             }));
           });
       };
-    
+
+      
       useEffect(() => {
         HandleLoadProducts();
       }, [refreshProducts]);
+      
+      const PLACEHOLDER_IMAGE_URL = '/images/placeholder-product.png';
 
+    const GetProductImageUrl = (imagePath: string | null): string => {
+        if (imagePath) {
+            const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+            return `http://localhost:8000/storage/${cleanedPath}`;
+        }
+        return PLACEHOLDER_IMAGE_URL;
+    };
+    
   return (
     <>
         <table className="table table-hover">
                 <thead>
                     <tr>
+                        <th>Image</th>
                         <th>SKU</th>
                         <th>Name</th>
                         <th>Price (₱)</th>
@@ -57,8 +70,9 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
                             <td colSpan={12} className="text-center"><Spinner /></td>
                         </tr>
                     ) : state.products.length > 0 ? (
-                        state.products.map((product, index) => (
-                            <tr className="align-middle" key={index}>
+                        state.products.map((product) => (
+                            <tr className="align-middle" key={product.product_id}>
+                                <td><img src={GetProductImageUrl(product.product_image)} alt={product.product_name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }}className="img-thumbnail"/></td>
                                 <td>{product.product_sku}</td>
                                 <td>{product.product_name}</td>
                                 <td>{product.product_price}</td>
