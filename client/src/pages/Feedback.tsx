@@ -6,6 +6,7 @@ import type { FeedbackFieldErrors } from '../components/interfaces/feedback/Feed
 import type { FeedbackPayload } from '../components/interfaces/feedback/FeedbackPayload'; // Import FeedbackPayload
 import SmolSpinner from '../components/SmolSpinner';
 import MainLayout from './layout/MainLayout';
+import { Link } from 'react-router-dom';
 
 interface FeedbackPageState {
     loadingStore: boolean;
@@ -210,12 +211,9 @@ const Feedback = () => {
                             </div>
                         </div> 
 
-                        <div className="d-flex justify-content-end mt-4"> 
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                                disabled={state.loadingStore}
-                            >
+                        <div className="d-flex justify-content-end mt-4 gap-2">
+                            <Link className="btn btn-secondary" to={'/'}>Back</Link>
+                            <button type="submit" className="btn btn-primary" disabled={state.loadingStore}>
                                 {state.loadingStore ? (
                                     <>
                                         <SmolSpinner /> Sending... 

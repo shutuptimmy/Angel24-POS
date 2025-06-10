@@ -7,6 +7,7 @@ import Orders from "./pages/Orders";
 import Cashier from "./pages/Cashier";
 import Feedback from "./pages/Feedback";
 import Statistics from "./pages/Statistics";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -14,32 +15,67 @@ const router = createBrowserRouter([
     element: <Login />
   },
   {
-    path: '/home', 
-    element: <Cashier />
+    path: '/', 
+    element: (
+        <ProtectedRoute>
+          <Cashier />
+
+        </ProtectedRoute>
+    )
   },
   {
-    path: '/', 
-    element: <Products />
+    path: '/inventory', 
+    element: (
+      <ProtectedRoute>
+        <Products />
+
+      </ProtectedRoute>
+    )
   },
   {
     path: '/stocks', 
-    element: <Stocks />
+    element: (
+      <ProtectedRoute>
+
+        <Stocks />
+      </ProtectedRoute>
+    )
   },
   {
     path: '/accounts', 
-    element: <Users />
+    element: (
+      <ProtectedRoute>
+        <Users />
+
+      </ProtectedRoute>
+    )
   },
   {
     path: '/orders', 
-    element: <Orders />
+    element: (
+      <ProtectedRoute>
+        <Orders />
+
+      </ProtectedRoute>
+    )
   },
   {
     path: '/feedback', 
-    element: <Feedback />
+    element: (
+      <ProtectedRoute>
+        <Feedback />
+
+      </ProtectedRoute>
+    )
   },
   {
     path: '/statistics', 
-    element: <Statistics />
+    element: (
+      <ProtectedRoute>
+        <Statistics />
+
+      </ProtectedRoute>
+    )
   },
   
 ])

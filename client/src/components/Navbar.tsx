@@ -1,16 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/angels24-logo.png"
-import { useCallback, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useCallback, useState, type FormEvent } from "react";
+import ErrorHandler from "./handler/ErrorHandler";
+import SmolSpinner from "./SmolSpinner";
 
 const Navbar = () => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+  
+    const [loadingLogout, setLoadingLogout] = useState(false);
+    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+
     const menuItems = [
         {
-            route: "/",
+            route: "/inventory",
             title: "Inventory",
         },
         {
             route: "/stocks",
             title: "Stock Monitoring",
+        },
+        {
+            route: "/orders",
+            title: "Transactions",
         },
         {
             route: "/statistics",
@@ -21,26 +34,52 @@ const Navbar = () => {
             title: "Accounts",
         },
     ];
-
-    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
-    
     const handleNavCollapse = useCallback(() => {
         setIsNavCollapsed(!isNavCollapsed);
     }, [isNavCollapsed]);
+
+    const handleLogout = (e: FormEvent) => {
+        e.preventDefault();
+    
+        setLoadingLogout(true);
+    
+        logout()
+          .then(() => {
+            navigate("/");
+          })
+          .catch((error) => {
+            ErrorHandler(error, null);
+          })
+          .finally(() => {
+            setLoadingLogout(false);
+          });
+      };
+    
+      const handleUserStatus = () => {
+        const user = localStorage.getItem("user");
+        const parsedUser = user ? JSON.parse(user) : null;
+    
+        let fullName = "";
+    
+        if (parsedUser.middle_name) {
+          fullName = `${parsedUser.last_name}, ${parsedUser.first_name} ${parsedUser.middle_name[0]}.`;
+        } else {
+          fullName = `${parsedUser.last_name}, ${parsedUser.first_name}`;
+        }
+    
+        return fullName;
+      };
 
   return (
     <>
         <nav className="navbar navbar-expand-lg bg-primary rounded-bottom mb-3">
             <div className="container-fluid">
-                <Link className="navbar-brand" to="/">
+                <a className="navbar-brand" href="/">
                     <img src={Logo} className="rounded-4" width={50} alt="Angels24-logo"/>
-                </Link>
-
-                
+                </a>
                 <button className="navbar-toggler" type="button" onClick={handleNavCollapse} aria-controls="navbarSupportedContent" aria-expanded={!isNavCollapsed} aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-
                 <div className={`collapse navbar-collapse ${!isNavCollapsed ? 'show' : ''}`} id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         {menuItems.map((menuItem, index) => (
@@ -51,11 +90,14 @@ const Navbar = () => {
                             </li>
                         ))}
                     </ul>
-
-                    <div className="d-flex align-items-center flex-column flex-lg-row text-white ms-lg-auto">
-                        <b className="px-lg-4 mb-2 mb-lg-0">Logged in as You</b>
-                        <Link to="/logout" className="btn btn-outline-light">Logout</Link>
-                    </div>
+                    <b className="pe-4 text-white">You're logged in as, {handleUserStatus()}</b>
+                    <button type="submit" className="btn btn-danger" onClick={handleLogout} disabled={loadingLogout}>
+                        {loadingLogout ? (
+                        <>
+                            <SmolSpinner /> Logging Out...
+                        </>
+                        ) : ("Logout")}
+                    </button>
                 </div>
             </div>
         </nav>

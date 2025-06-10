@@ -1,5 +1,4 @@
 import { useEffect, useState, type ChangeEvent, useCallback, useRef } from "react";
-import { Link } from "react-router-dom"; 
 import type { AxiosResponse } from 'axios'; 
 
 import BigLogo from "../assets/angels24-icon.png"; 
@@ -15,6 +14,8 @@ import OrdersTable from "../components/tables/OrdersTable";
 import AlertMessage from "../components/AlertMessage"; 
 import type { LocalCartItem } from "../components/interfaces/order/LocalCartItem";
 import SmolSpinner from "../components/SmolSpinner";
+import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 
 const Cashier = () => {
@@ -258,44 +259,10 @@ const Cashier = () => {
     return (
         <div style={CashierBg.header}>
             <div style={CashierBg.content}>
-                <nav className="navbar navbar-expand-lg bg-primary rounded mb-3">
-                    <div className="container-fluid">
-                        <Link className="navbar-brand" to="/">
-                            <img src={BigLogo} className="rounded-4" width={50} alt="Angels24-logo"/>
-                        </Link>
-
-                        
-                        <button className="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-
-                        <div className='collapse navbar-collapse' id="navbarSupportedContent">
-                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                                    <li className="nav-item">
-                                        <Link className='nav-link fw-medium text-white' to={'/orders'}>Orders</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className='nav-link fw-medium text-white' to={'/feedback'}>Feedback</Link>
-                                    </li>
-                            </ul>
-
-                            <div className="d-flex align-items-center flex-column flex-lg-row text-white ms-lg-auto">
-                                <b className="px-lg-4 mb-2 mb-lg-0">Logged in as You</b>
-                                <Link to="/logout" className="btn btn-outline-light">Logout</Link>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <Navbar />
 
                 <div className="container-fluid mt-3"> 
-                    <AlertMessage 
-                        message={message} 
-                        isSuccess={isSuccess} 
-                        isVisible={isVisible} 
-                        onClose={handleCloseAlertMessage} 
-                    />
-
-
+                    <AlertMessage message={message} isSuccess={isSuccess} isVisible={isVisible} onClose={handleCloseAlertMessage} />
                             
                     <div className="card mb-3 shadow-sm">
                         <div className="card-body">
@@ -372,12 +339,8 @@ const Cashier = () => {
                     <div className="card shadow-sm">
                         <div className="card-body d-flex justify-content-between align-items-center bg-light">
                             <h4 className="mb-0">Total: ₱{totalOrderPrice.toFixed(2)}</h4>
-                            <button
-                                type="button"
-                                className="btn btn-success btn-lg"
-                                onClick={handleProcessTransaction}
-                                disabled={currentOrderItems.length === 0 || processingOrder}
-                            >
+                            <Link className="btn btn-primary btn-lg" to={'/feedback'}>Feedback</Link>
+                            <button type="button" className="btn btn-success btn-lg" onClick={handleProcessTransaction} disabled={currentOrderItems.length === 0 || processingOrder}>
                                 {processingOrder ? (
                                 <>
                                     <SmolSpinner /> Processing...

@@ -87,7 +87,7 @@ const TransactionsTable = () => {
                                         <th>Product</th>
                                         <th class="text-end">Qty</th>
                                         <th class="text-end">Price</th>
-                                        <th class="text-end">Disc.</th>
+                                        <th class="text-end">Discount</th>
                                         <th class="text-end">Subtotal</th>
                                     </tr>
                                 </thead>
@@ -105,11 +105,12 @@ const TransactionsTable = () => {
                             </table>
                         </div>
                         <div class="receipt-total">
-                            Grand Total: ₱${detailedOrder.total_price.toFixed(2)}
+                            Total: ₱${detailedOrder.total_price.toFixed(2)}
                         </div>
                         <div class="receipt-footer">
                             <p>Thank you for your purchase!</p>
-                            <p>Powered by Angels24 POS</p>
+                            <p>Powered by Angel's 24 POS System</p>
+                            <p>Angel's 24 Marketing Solutions</p>
                         </div>
                     </body>
                     </html>
