@@ -53,6 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'make_com_webhook_url' => env('MAKE_COM_WEBHOOK_URL'),
 
     /*
     |--------------------------------------------------------------------------

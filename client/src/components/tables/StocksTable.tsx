@@ -39,49 +39,41 @@ const StocksTable = ({refreshStocks}: StocksTableProps) => {
 
   return (
     <>
-        <table className="table table-hover">
-            <thead className="table-primary">
-                <tr>
-                    <th>SKU</th>
-                    <th>Name</th>
-                    <th>Stocks Available</th>
-                    <th>Threshold Value Alert</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {state.loadingStocks ? (
-                    <tr className="align-middle">
-                        <td colSpan={12} className="text-center"><Spinner /></td>
+        <div className="table-responsive">
+            <table className="table table-hover align-middle">
+                <thead className="table-primary">
+                    <tr>
+                        <th scope="col">SKU</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Stocks Available</th>
+                        <th scope="col">Threshold Alert</th>
                     </tr>
-                ) : state.products.length > 0 ? (
-                    state.products.map((product, index) => {
-                        if (product.product_stocks <= product.product_min_threshold) {
+                </thead>
+                <tbody>
+                    {state.loadingStocks ? (
+                        <tr className="text-center">
+                            <td colSpan={4}><Spinner /></td>
+                        </tr>
+                    ) : state.products.length > 0 ? (
+                        state.products.map((product) => {
+                            const isBelowThreshold = product.product_stocks <= product.product_min_threshold;
                             return (
-                                <tr className="align-middle table-danger" key={index}>
+                                <tr className={isBelowThreshold ? "table-danger" : ""} key={product.product_id}>
                                     <td>{product.product_sku}</td>
                                     <td>{product.product_name}</td>
-                                    <td className="fw-bold text-danger">{product.product_stocks}</td>
+                                    <td className={isBelowThreshold ? "fw-bold text-danger" : ""}>{product.product_stocks}</td>
                                     <td>{product.product_min_threshold}</td>
                                 </tr>
                             );
-                        }
-                        return (
-                            <tr className="align-middle" key={index}>
-                                <td>{product.product_sku}</td>
-                                <td>{product.product_name}</td>
-                                <td>{product.product_stocks}</td>
-                                <td>{product.product_min_threshold}</td>
-                            </tr>
-                        );
-                    })
-                ) : (
-                    <tr className="align-middle">
-                        <td colSpan={12} className="text-center">No stocks for now</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
+                        })
+                    ) : (
+                        <tr className="text-center">
+                            <td colSpan={4} className="text-muted">No stocks for now</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
     </>
   )
 }

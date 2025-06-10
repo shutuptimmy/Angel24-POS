@@ -51,51 +51,59 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
     
   return (
     <>
-        <table className="table table-hover">
+        <div className="table-responsive">
+            <table className="table table-striped table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>Image</th>
-                        <th>SKU</th>
-                        <th>Category</th>
-                        <th>Name</th>
-                        <th>Price (₱)</th>
-                        <th>Date Added</th>
-                        <th>Date Updated</th>
-                        <th>Actions</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">SKU</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price (₱)</th>
+                        <th scope="col">Stocks</th>
+                        <th scope="col">Min Threshold</th>
+                        <th scope="col">Date Added</th>
+                        <th scope="col">Date Updated</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {state.loadingProducts ? (
-                        <tr className="align-middle">
-                            <td colSpan={12} className="text-center"><Spinner /></td>
+                        <tr className="text-center">
+                            <td colSpan={10}><Spinner /></td>
                         </tr>
                     ) : state.products.length > 0 ? (
                         state.products.map((product) => (
-                            <tr className="align-middle" key={product.product_id}>
-                                <td><img src={GetProductImageUrl(product.product_image)} alt={product.product_name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }}className="img-thumbnail"/></td>
+                            <tr key={product.product_id}>
+                                <td>
+                                    <div style={{ width: '50px', height: '50px', overflow: 'hidden', borderRadius: '5px' }}>
+                                        <img src={GetProductImageUrl(product.product_image)} alt={product.product_name} className="img-fluid" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+                                    </div>
+                                </td>
                                 <td>{product.product_sku}</td>
                                 <td>{product.category.category}</td>
                                 <td>{product.product_name}</td>
-                                <td>{product.product_price}</td>
+                                <td>{product.product_price.toFixed(2)}</td>
+                                <td>{product.product_stocks}</td>
+                                <td>{product.product_min_threshold}</td>
                                 <td>{new Date(product.created_at).toLocaleString()}</td>
                                 <td>{new Date(product.updated_at).toLocaleString()}</td>
                                 <td>
                                     <div className="btn-group" role="group">
-                                        <button className="btn btn-success" onClick={() => onEditProduct(product)}>Manage</button>
-                                        <button className="btn btn-danger" onClick={() => onDeleteProduct(product)}>Delete</button>
+                                        <button className="btn btn-success btn-sm" onClick={() => onEditProduct(product)}>Manage</button>
+                                        <button className="btn btn-danger btn-sm" onClick={() => onDeleteProduct(product)}>Delete</button>
                                     </div>
                                 </td>
                             </tr>
                         ))
                     ) : (
-                      <tr className="align-middle">
-                        <td colSpan={12} className="text-center">
-                            No Products Found
-                        </td>
-                      </tr>
+                        <tr className="text-center">
+                            <td colSpan={10} className="text-muted">No Products Found</td>
+                        </tr>
                     )}
                 </tbody>
-            </table>    
+            </table>
+        </div>
     </>
   )
 }

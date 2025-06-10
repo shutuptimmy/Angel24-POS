@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\GenderController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::resource('/product', ProductController::class);
 
 Route::controller(ProductController::class)->group(function () {
     Route::get('/LoadProducts', 'LoadProducts');
@@ -24,6 +27,12 @@ Route::controller(GenderController::class)->group(function () {
 Route::controller(CategoryController::class)->group(function () {
     Route::get('/LoadCategories', 'LoadCategories');
     Route::get('/GetCategory/{categoryId}', 'GetCategory');
+});
+
+Route::controller(FeedbackController::class)->group(function () {
+    Route::get('/LoadFeedbacks', 'LoadFeedbacks');
+    Route::get('/GetFeedback/{feedbackId}', 'GetFeedback');
+    Route::post('/StoreFeedback', 'StoreFeedback');
 });
 
 Route::controller(RoleController::class)->group(function () {

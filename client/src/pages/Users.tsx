@@ -33,6 +33,7 @@ const Users = () => {
 
     const content = (
         <>
+            <div className="container-fluid mt-4">
             <AddUserModal
                 showModal={openAddUserModal}
                 onRefreshUsers={() => setRefreshUsers(!refreshUsers)}
@@ -51,10 +52,22 @@ const Users = () => {
                 onClose={handleCloseDeleteUserModal}
             />
 
-            <div className="d-flex justify-content-end mt-2">
-                <button type="button" className="btn btn-primary" onClick={() => setOpenAddUserModal(true)}>Add New User</button>
+            <div className="row justify-content-center">
+                <div className="col-12">
+                    <div className="card shadow-sm rounded-lg p-3">
+                        <div className="card-body">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h4 className="card-title mb-0">User Details</h4>
+                                <button type="button" className="btn btn-primary" onClick={() => setOpenAddUserModal(true)}>
+                                    Add New User
+                                </button>
+                            </div>
+                            <UsersTable refreshUsers={refreshUsers} onEditUser={handleOpenEditUserModal} onDeleteUser={handleOpenDeleteUserModal} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <UsersTable refreshUsers={refreshUsers} onEditUser={handleOpenEditUserModal} onDeleteUser={handleOpenDeleteUserModal} />
         </>
     );
 

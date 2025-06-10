@@ -1,15 +1,17 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Products from "./pages/product/Products";
-import LoginForm from "./components/forms/LoginForm";
-import Stocks from "./pages/product/Stocks";
+import Products from "./pages/Products";
+import Login from "./pages/Login";
+import Stocks from "./pages/Stocks";
 import Users from "./pages/Users";
-import Orders from "./pages/order/Orders";
+import Orders from "./pages/Orders";
 import Cashier from "./pages/Cashier";
+import Feedback from "./pages/Feedback";
+import Statistics from "./pages/Statistics";
 
 const router = createBrowserRouter([
   {
     path: '/login', 
-    element: <LoginForm />
+    element: <Login />
   },
   {
     path: '/home', 
@@ -31,10 +33,14 @@ const router = createBrowserRouter([
     path: '/orders', 
     element: <Orders />
   },
-  // {
-  //   path: '/feedback', 
-  //   element: <Orders />
-  // },
+  {
+    path: '/feedback', 
+    element: <Feedback />
+  },
+  {
+    path: '/statistics', 
+    element: <Statistics />
+  },
   
 ])
 

@@ -8,8 +8,8 @@ interface MainLayoutProps {
 var LightBg = {
   header: {
       backgroundImage: `url(${Background})`,
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center top',
+      backgroundRepeat: 'repeat-y',
       backgroundSize: 'cover',
       height: `100vh`,
 
@@ -30,7 +30,7 @@ const MainLayout = ({content}: MainLayoutProps) => {
       <div style={LightBg.content}>
         <div className="container-fluid">
             <Navbar />
-            <div>
+            <div className="py-4">
                 {content}
             </div>
         </div>

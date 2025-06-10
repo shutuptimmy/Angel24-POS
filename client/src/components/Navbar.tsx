@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Logo from "../assets/angels24-logo.png"
+import { useCallback, useState } from "react";
 
 const Navbar = () => {
     const menuItems = [
@@ -13,34 +14,48 @@ const Navbar = () => {
         },
         {
             route: "/statistics",
-            title: "Reports & Statistics",
+            title: "Statistics",
         },
         {
             route: "/accounts",
-            title: "Account Management",
+            title: "Accounts",
         },
     ];
+
+    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+    
+    const handleNavCollapse = useCallback(() => {
+        setIsNavCollapsed(!isNavCollapsed);
+    }, [isNavCollapsed]);
 
   return (
     <>
         <nav className="navbar navbar-expand-lg bg-primary rounded-bottom mb-3">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">
+                <Link className="navbar-brand" to="/">
                     <img src={Logo} className="rounded-4" width={50} alt="Angels24-logo"/>
-                </a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
+                </Link>
+
+                
+                <button className="navbar-toggler" type="button" onClick={handleNavCollapse} aria-controls="navbarSupportedContent" aria-expanded={!isNavCollapsed} aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse fw-medium text-white" id="navbarSupportedContent">
-                    <ul className="navbar-nav">
+
+                <div className={`collapse navbar-collapse ${!isNavCollapsed ? 'show' : ''}`} id="navbarSupportedContent">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         {menuItems.map((menuItem, index) => (
                             <li className="nav-item" key={index}>
-                                <Link className="nav-link fw-medium text-white" to={menuItem.route}>{menuItem.title} </Link>
+                                <Link className={`nav-link fw-medium text-white ${location.pathname === menuItem.route ? 'active' : ''}`} to={menuItem.route} onClick={handleNavCollapse}>
+                                    {menuItem.title}
+                                </Link>
                             </li>
                         ))}
                     </ul>
-                    <b className="px-4">Logged in as Wendylle (Admin)</b>
-                    <b className="">Logout</b>
+
+                    <div className="d-flex align-items-center flex-column flex-lg-row text-white ms-lg-auto">
+                        <b className="px-lg-4 mb-2 mb-lg-0">Logged in as You</b>
+                        <Link to="/logout" className="btn btn-outline-light">Logout</Link>
+                    </div>
                 </div>
             </div>
         </nav>

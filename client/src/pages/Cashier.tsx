@@ -244,7 +244,7 @@ const Cashier = () => {
 
     useEffect(() => {
         loadAllProducts();
-        document.title = "Cashier - Angels24 POS"; 
+        document.title = "Cashier"; 
     }, [loadAllProducts]);
 
     useEffect(() => {
@@ -258,6 +258,34 @@ const Cashier = () => {
     return (
         <div style={CashierBg.header}>
             <div style={CashierBg.content}>
+                <nav className="navbar navbar-expand-lg bg-primary rounded mb-3">
+                    <div className="container-fluid">
+                        <Link className="navbar-brand" to="/">
+                            <img src={BigLogo} className="rounded-4" width={50} alt="Angels24-logo"/>
+                        </Link>
+
+                        
+                        <button className="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div className='collapse navbar-collapse' id="navbarSupportedContent">
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li className="nav-item">
+                                        <Link className='nav-link fw-medium text-white' to={'/orders'}>Orders</Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link className='nav-link fw-medium text-white' to={'/feedback'}>Feedback</Link>
+                                    </li>
+                            </ul>
+
+                            <div className="d-flex align-items-center flex-column flex-lg-row text-white ms-lg-auto">
+                                <b className="px-lg-4 mb-2 mb-lg-0">Logged in as You</b>
+                                <Link to="/logout" className="btn btn-outline-light">Logout</Link>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
 
                 <div className="container-fluid mt-3"> 
                     <AlertMessage 
@@ -267,28 +295,15 @@ const Cashier = () => {
                         onClose={handleCloseAlertMessage} 
                     />
 
-                    <div className="card mb-3 shadow-sm">
-                        <div className="card-header d-flex justify-content-between align-items-center">
-                            <nav className="navbar navbar-expand-lg">
-                                <div className="container-fluid"> 
-                                    <a className="navbar-brand">
-                                        <img src={BigLogo} height={80} alt="Angels24 Logo" />
-                                    </a>
-                                    <div className="d-flex align-items-baseline justify-content-end flex-grow-1">
-                                        <Link to={"/orders"} className="btn btn-primary me-2">Order History</Link> 
-                                        <Link to={"/feedback"} className="btn btn-primary me-2">Feedback</Link>
-                                        <Link to={"/login"} className="btn btn-primary">Logout</Link>
-                                    </div>
-                                </div>
-                            </nav>
-                        </div>
 
+                            
+                    <div className="card mb-3 shadow-sm">
                         <div className="card-body">
                             <div className="col-10 mb-3">
                                 <label htmlFor="customerName" className="form-label">Customer Name</label>
                                 <input type="text" className="form-control" id="customerName" value={customerName} onChange={handleCustomerNameChange} placeholder="Leave empty for Walk-in Customer"/>
                             </div>
-                            <div className="form-check">
+                            <div className="form-check pb-2">
                                 <input className="form-check-input" type="checkbox" id="seniorCitizenCheck" checked={isSeniorCitizen} onChange={handleSeniorCitizenToggle}/>
                                 <label className="form-check-label" htmlFor="seniorCitizenCheck">Senior Citizen? (Applies additional 10% after transaction)</label>
                             </div>
@@ -348,7 +363,7 @@ const Cashier = () => {
                     </div>
 
                     <div className="card mb-3 shadow-sm">
-                        <div className="card-header bg-dark text-white">Current Order</div>
+                        <div className="card-header bg-primary fw-bold text-white text-center">Current Order</div>
                         <div className="card-body">
                             <OrdersTable items={currentOrderItems} onRemoveItem={handleRemoveProductFromOrder} />
                         </div>

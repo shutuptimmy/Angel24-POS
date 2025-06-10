@@ -35,4 +35,6 @@ return [
         ],
     ],
 
+    'make_com' => env('MAKE_COM_WEBHOOK_URL', 'default_value')
+
 ];

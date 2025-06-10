@@ -65,57 +65,59 @@ const UsersTable = ({ refreshUsers, onEditUser, onDeleteUser }: UsersTableProps)
 
     return (
         <>
-            <table className="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th>Birthdate</th>
-                        <th>Address</th>
-                        <th>Contact Number</th>
-                        <th>Role</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {state.loadingUsers ? (
-                        <tr className="align-middle">
-                            <td colSpan={8} className="text-center">
-                                <Spinner />
-                            </td>
+            <div className="table-responsive">
+                <table className="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Full Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Birthdate</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Contact Number</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Action</th>
                         </tr>
-                    ) : state.users.length > 0 ? (
-                        state.users.map((user, index) => (
-                            <tr className="align-middle" key={index}>
-                                <td>{handleUsersFullName(user)}</td>
-                                <td>{user.email}</td>
-                                <td>{user.gender.gender}</td>
-                                <td>{user.birth_date}</td>
-                                <td>{user.address}</td>
-                                <td>{user.contact_number}</td>
-                                <td className="fw-bold">{user.role.role}</td>
-                                <td>
-                                    <div className="btn-group">
-                                        <button type="button" className="btn btn-success" onClick={() => onEditUser(user)}>
-                                            Edit
-                                        </button>
-                                        <button type="button" className="btn btn-danger" onClick={() => onDeleteUser(user)}>
-                                            Delete
-                                        </button>
-                                    </div>
+                    </thead>
+                    <tbody>
+                        {state.loadingUsers ? (
+                            <tr className="text-center">
+                                <td colSpan={8}>
+                                    <Spinner />
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr className="align-middle">
-                            <td colSpan={8} className="text-center">
-                                No Users Found
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                        ) : state.users.length > 0 ? (
+                            state.users.map((user) => ( // Removed index from key, use user.id if available
+                                <tr key={user.user_id}> {/* Assuming user_id exists and is unique */}
+                                    <td>{handleUsersFullName(user)}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.gender.gender}</td>
+                                    <td>{user.birth_date}</td>
+                                    <td>{user.address}</td>
+                                    <td>{user.contact_number}</td>
+                                    <td className="fw-bold">{user.role.role}</td>
+                                    <td>
+                                        <div className="btn-group" role="group">
+                                            <button type="button" className="btn btn-success btn-sm" onClick={() => onEditUser(user)}>
+                                                Edit
+                                            </button>
+                                            <button type="button" className="btn btn-danger btn-sm" onClick={() => onDeleteUser(user)}>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className="text-center">
+                                <td colSpan={8} className="text-muted">
+                                    No Users Found
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 };

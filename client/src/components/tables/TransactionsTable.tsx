@@ -5,7 +5,7 @@ import type { Order } from '../interfaces/order/Order';
 import AlertMessage from '../AlertMessage'; 
 import Spinner from '../Spinner';
 
-const PostOrdersPage = () => {
+const TransactionsTable = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     
@@ -185,4 +185,4 @@ const PostOrdersPage = () => {
     );
 };
 
-export default PostOrdersPage;
+export default TransactionsTable;
