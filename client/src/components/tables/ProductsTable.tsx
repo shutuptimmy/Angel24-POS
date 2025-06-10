@@ -3,6 +3,7 @@ import type { Products } from "../interfaces/product/Products";
 import ProductService from "../../services/ProductService";
 import ErrorHandler from "../handler/ErrorHandler";
 import Spinner from "../Spinner";
+import Placeholder from "../../assets/angels24-placeholder.png"
 
 interface ProductsTableProps {
     refreshProducts: boolean;
@@ -40,14 +41,12 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
         HandleLoadProducts();
       }, [refreshProducts]);
       
-      const PLACEHOLDER_IMAGE_URL = '/images/placeholder-product.png';
-
     const GetProductImageUrl = (imagePath: string | null): string => {
         if (imagePath) {
-            const cleanedPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
-            return `http://localhost:8000/storage/${cleanedPath}`;
+            const image = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+            return `http://localhost:8000/storage/${image}`;
         }
-        return PLACEHOLDER_IMAGE_URL;
+        return Placeholder;
     };
     
   return (
@@ -57,6 +56,7 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
                     <tr>
                         <th>Image</th>
                         <th>SKU</th>
+                        <th>Category</th>
                         <th>Name</th>
                         <th>Price (₱)</th>
                         <th>Date Added</th>
@@ -74,10 +74,11 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
                             <tr className="align-middle" key={product.product_id}>
                                 <td><img src={GetProductImageUrl(product.product_image)} alt={product.product_name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }}className="img-thumbnail"/></td>
                                 <td>{product.product_sku}</td>
+                                <td>{product.category.category}</td>
                                 <td>{product.product_name}</td>
                                 <td>{product.product_price}</td>
-                                <td>{product.created_at}</td>
-                                <td>{product.updated_at}</td>
+                                <td>{new Date(product.created_at).toLocaleString()}</td>
+                                <td>{new Date(product.updated_at).toLocaleString()}</td>
                                 <td>
                                     <div className="btn-group" role="group">
                                         <button className="btn btn-success" onClick={() => onEditProduct(product)}>Manage</button>

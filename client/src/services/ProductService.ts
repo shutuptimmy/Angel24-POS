@@ -1,13 +1,11 @@
+import type { AxiosResponse } from "axios";
 import AxiosInstance from "../AxiosInstance"
+import type { LoadProductsResponse } from "../components/interfaces/product/LoadProductsResponse";
 
 const ProductService = {
-    LoadProducts: async () => {
-        return AxiosInstance.get("/LoadProducts")
-          .then((response) => response)
-          .catch((error) => {
-            throw error;
-          });
-      },
+  LoadProducts: async (): Promise<AxiosResponse<LoadProductsResponse>> => {
+    return AxiosInstance.get<LoadProductsResponse>('/LoadProducts').then((response: AxiosResponse<LoadProductsResponse>) => response).catch((error) => { throw error; });
+},
 
     GetProduct: async (productId: number) => {
         return AxiosInstance.get(`/GetProduct/${productId}`).then((response) => response).catch((error) => { throw error; });

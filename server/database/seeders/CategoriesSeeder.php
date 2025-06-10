@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,10 @@ class CategoriesSeeder extends Seeder
     {
         DB::table('tbl_categories')->insert([
             ['category' => 'Foods'],
-            ['category' => 'Drinks'],
+            ['category' => 'Snacks'],
+            ['category' => 'Beverages'],
+            ['category' => 'Personal Care'],
+            ['category' => 'Household Supplies'],
         ]);
     }
 }

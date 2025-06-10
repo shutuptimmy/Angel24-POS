@@ -3,7 +3,7 @@ import AxiosInstance from "../AxiosInstance";
 const UserService = {
     loadUsers: async () => {
         return AxiosInstance.get("/loadUsers")
-            .then((respose) => respose)
+            .then((response) => response)
             .catch((error) => {
                 throw error;
             });

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GenderController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
@@ -35,6 +36,12 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/storeUser', 'storeUser');
     Route::put('/updateUser/{user}', 'updateUser');
     Route::put('/destroyUser/{user}', 'destroyUser');
+});
+
+Route::controller(OrderController::class)->group(function () {
+    Route::get('/LoadOrders', 'LoadOrders');
+    Route::get('/GetOrder/{orderId}', 'GetOrder');
+    Route::post('/StoreOrder', 'StoreOrder');
 });
 
 // Route::get('/user', function (Request $request) {
