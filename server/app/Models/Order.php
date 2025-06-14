@@ -15,6 +15,15 @@ class Order extends Model
         'total_quantity',
     ];
 
+    protected $casts = [
+        'is_senior_citizen' => 'boolean',
+        'total_quantity' => 'integer',
+        'customer_name' => 'encrypted',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+
     public function productOrders()
     {
         return $this->hasMany(ProductOrder::class, 'order_id', 'order_id');

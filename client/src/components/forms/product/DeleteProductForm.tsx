@@ -94,11 +94,11 @@ const DeleteProductForm = ({ product, setSubmitForm, setLoadingDelete, onDeleted
                   value={state.product_name}
                   readOnly
                 />
-                 {imagePreviewUrl && (
+                 {/* {imagePreviewUrl && (
                     <div className="mt-2">
                         <img src={imagePreviewUrl} alt="Product Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />
                     </div>
-                 )}
+                 )} */}
               </div>
             </div>
           </div>

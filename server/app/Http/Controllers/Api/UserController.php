@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -40,7 +42,7 @@ class UserController extends Controller
 
         $age = date_diff(date_create($validated['birth_date']), date_create('now'))->y;
 
-        User::create([
+        $user = User::create([
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'],
             'last_name' => $validated['last_name'],
@@ -53,6 +55,16 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'role_id' => $validated['role']
+        ]);
+
+        AuditLog::create([
+            'user_id' => Auth::id(), // The authenticated user who created the new user
+            'event' => 'user_created',
+            'auditable_type' => User::class,
+            'auditable_id' => $user->user_id,
+            'new_values' => $user->withoutRelations()->toArray(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
         ]);
 
         return response()->json([
@@ -76,6 +88,7 @@ class UserController extends Controller
         ]);
 
         $age = date_diff(date_create($validated['birth_date']), date_create('now'))->y;
+        $oldValues = $user->withoutRelations()->toArray();
 
         $user->update([
             'first_name' => $validated['first_name'],
@@ -89,7 +102,17 @@ class UserController extends Controller
             'contact_number' => $validated['contact_number'],
             'email' => $validated['email'],
             'role_id' => $validated['role'],
+        ]);
 
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'event' => 'user_updated',
+            'auditable_type' => User::class,
+            'auditable_id' => $user->user_id,
+            'old_values' => $oldValues,
+            'new_values' => $user->withoutRelations()->toArray(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
         ]);
 
         return response()->json([
@@ -99,8 +122,22 @@ class UserController extends Controller
 
     public function destroyUser(User $user)
     {
+
+        $oldValues = $user->withoutRelations()->toArray();
+
         $user->update([
             'is_deleted' => true
+        ]);
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'event' => 'user_deactivated',
+            'auditable_type' => User::class,
+            'auditable_id' => $user->user_id,
+            'old_values' => $oldValues,
+            'new_values' => $user->withoutRelations()->toArray(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->header('User-Agent'),
         ]);
 
         return response()->json([

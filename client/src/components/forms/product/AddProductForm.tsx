@@ -171,7 +171,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
             <label htmlFor="product_price" className="form-label">Price</label>
             <div className="input-group">
               <span className="input-group-text" id="Peso">₱</span>
-              <input type="text" className="form-control" id="product_price" name="product_price" aria-describedby="Peso" value={state.product_price} onChange={HandleInputChange}/>
+              <input type="number" className="form-control" id="product_price" name="product_price" aria-describedby="Peso" value={state.product_price} onChange={HandleInputChange}/>
               {state.errors.product_price && (
               <span className="text-danger">{state.errors.product_price[0]}</span>
             )}
@@ -207,7 +207,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
 
           <div className="col-3 mb-3">
             <label htmlFor="product_stocks" className="form-label">Available Stocks</label>
-            <input type="text" className="form-control" id="product_stocks" name="product_stocks" value={state.product_stocks} onChange={HandleInputChange}/>
+            <input type="number" className="form-control" id="product_stocks" name="product_stocks" value={state.product_stocks} onChange={HandleInputChange}/>
             {state.errors.product_stocks && (
               <span className="text-danger">{state.errors.product_stocks[0]}</span>
             )}
@@ -215,21 +215,21 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
 
           <div className="col-3 mb-3">
             <label htmlFor="product_min_threshold" className="form-label">Minimum Threshold</label>
-            <input type="text" className="form-control" id="product_min_threshold" name="product_min_threshold" value={state.product_min_threshold} onChange={HandleInputChange}/>
+            <input type="number" className="form-control" id="product_min_threshold" name="product_min_threshold" value={state.product_min_threshold} onChange={HandleInputChange}/>
             {state.errors.product_min_threshold && (
               <span className="text-danger">{state.errors.product_min_threshold[0]}</span>
             )}
           </div>
 
-          <div className="mb-3">
+          {/* <div className="mb-3">
               <label htmlFor="product_image" className="form-label">Product Image</label>
               <input
-                type="file" // Important: type="file"
+                type="file"
                 className={`form-control ${state.errors.product_image ? "is-invalid" : ""}`}
                 id="product_image"
                 name="product_image"
-                accept="image/*" // Suggests image files
-                onChange={HandleFileInputChange} // Use the same handler
+                accept="image/*"
+                onChange={HandleFileInputChange}
               />
               {state.errors.product_image && (
                 <span className="text-danger">{state.errors.product_image[0]}</span>
@@ -244,7 +244,7 @@ const AddProductForm = ({setSubmitForm, setLoadingStore, onProductAdded}: AddPro
                   />
                 </div>
               )}
-            </div>
+            </div> */}
         </div>
       </div>
     </form>

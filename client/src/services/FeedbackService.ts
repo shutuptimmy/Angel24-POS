@@ -1,7 +1,7 @@
 import AxiosInstance from "../AxiosInstance";
 import type { AxiosResponse } from 'axios';
-import type { Feedbacks } from '../components/interfaces/feedback/Feedbacks'; // New import for data received
-import type { FeedbackPayload } from '../components/interfaces/feedback/FeedbackPayload'; // New import for data sent
+import type { Feedbacks } from '../components/interfaces/feedback/Feedbacks';
+import type { FeedbackPayload } from '../components/interfaces/feedback/FeedbackPayload';
 
 const FeedbackService = {
 

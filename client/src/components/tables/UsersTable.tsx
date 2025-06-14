@@ -87,8 +87,8 @@ const UsersTable = ({ refreshUsers, onEditUser, onDeleteUser }: UsersTableProps)
                                 </td>
                             </tr>
                         ) : state.users.length > 0 ? (
-                            state.users.map((user) => ( // Removed index from key, use user.id if available
-                                <tr key={user.user_id}> {/* Assuming user_id exists and is unique */}
+                            state.users.map((user) => (
+                                <tr key={user.user_id}>
                                     <td>{handleUsersFullName(user)}</td>
                                     <td>{user.email}</td>
                                     <td>{user.gender.gender}</td>

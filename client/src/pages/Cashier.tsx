@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 
 
 const Cashier = () => {
-    const [customerName, setCustomerName] = useState<string>("Walk-in Customer");
+    const [customerName, setCustomerName] = useState<string>("");
     const [availableProducts, setAvailableProducts] = useState<Products[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Products[]>([]); 
     const [searchTerm, setSearchTerm] = useState<string>(""); 
@@ -265,6 +265,10 @@ const Cashier = () => {
                     <AlertMessage message={message} isSuccess={isSuccess} isVisible={isVisible} onClose={handleCloseAlertMessage} />
                             
                     <div className="card mb-3 shadow-sm">
+                        <div className="card-header">
+                            <img src={BigLogo} className="img-fluid mx-auto d-block w-auto" alt="angels24" />
+                        </div>
+
                         <div className="card-body">
                             <div className="col-10 mb-3">
                                 <label htmlFor="customerName" className="form-label">Customer Name</label>

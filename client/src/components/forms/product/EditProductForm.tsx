@@ -14,13 +14,12 @@ interface EditProductFormProps {
 }
 
 const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedProduct }: EditProductFormProps) => {
-  // Add state for image preview and remove image flag
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [removeImageFlag, setRemoveImageFlag] = useState<boolean>(false);
 
   const [state, setState] = useState({
-    loadingGet: true, // You might remove this if not used for initial product fetch
-    loadingUpdate: false, // This is set by the prop setLoadingUpdate
+    loadingGet: true,
+    loadingUpdate: false,
     loadingCategories: true,
     categories: [] as Categories[],
     product_id: 0,
@@ -30,14 +29,13 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
     product_price: 0,
     product_stocks: 0,
     product_min_threshold: 0,
-    product_image: null as File | null, // To hold the new file object
+    product_image: null as File | null,
     errors: {} as ProductFieldErrors,
   });
 
-  // Handle number inputs (product_price, product_stocks, product_min_threshold)
   const HandleNumberInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const parsedValue = parseFloat(value) || 0; // Convert to number, default to 0 if invalid
+    const parsedValue = parseFloat(value) || 0;
     setState((prevState) => ({
       ...prevState,
       [name]: parsedValue,
@@ -46,7 +44,6 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
 
   const HandleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    // Special handling for number inputs (product_price, stocks, threshold)
     if (["product_price", "product_stocks", "product_min_threshold"].includes(name)) {
       HandleNumberInputChange(e as ChangeEvent<HTMLInputElement>); // Cast to HTMLInputElement
     } else {
@@ -65,7 +62,7 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
     }));
     if (file) {
       setImagePreviewUrl(URL.createObjectURL(file));
-      setRemoveImageFlag(false); // If a new image is selected, don't remove existing
+      setRemoveImageFlag(false);
     } else {
       setImagePreviewUrl(null);
     }
@@ -73,10 +70,10 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
 
   const HandleRemoveImage = () => {
     setImagePreviewUrl(null);
-    setRemoveImageFlag(true); // Set flag to tell backend to remove image
+    setRemoveImageFlag(true);
     setState((prevState) => ({
       ...prevState,
-      product_image: null, // Clear the file input
+      product_image: null,
     }));
   };
 
@@ -108,49 +105,42 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
 
     setLoadingUpdate(true);
 
-    // --- IMPORTANT: Clear errors immediately on submit ---
     setState((prevState) => ({
       ...prevState,
       errors: {} as ProductFieldErrors,
     }));
-    // --- END IMPORTANT ---
 
     const formData = new FormData();
     formData.append('product_sku', state.product_sku);
     formData.append('product_name', state.product_name);
-    // Ensure numbers are converted to string for FormData
     formData.append('product_price', state.product_price.toString());
     formData.append('category', state.category); // category is already a string ID
     formData.append('product_stocks', state.product_stocks.toString());
     formData.append('product_min_threshold', state.product_min_threshold.toString());
     
-    // --- Crucial for PUT requests with FormData in Laravel ---
     formData.append('_method', 'PUT'); 
-    // --- END Crucial ---
 
-    // Image handling (can be nullable)
     if (state.product_image) {
       formData.append('product_image', state.product_image);
     } else if (removeImageFlag) {
-      formData.append('remove_image', '1'); // Tell Laravel to remove the existing image
+      formData.append('remove_image', '1');
     }
 
     ProductService.UpdateProduct(state.product_id, formData)
       .then((res) => {
         if (res.status === 200) {
-          // On successful update, ensure errors are cleared (redundant but safe)
           setState((prevState) => ({
             ...prevState,
             errors: {} as ProductFieldErrors,
           }));
           onUpdatedProduct(res.data.message);
-          setRemoveImageFlag(false); // Reset flag after successful update
+          setRemoveImageFlag(false);
         } else {
           console.error("Unexpected status error while updating a product: ", res.status);
         }
       })
       .catch((error) => {
-        if (error.response?.status === 422) { // Use optional chaining for safer access
+        if (error.response?.status === 422) {
           setState((prevState) => ({
             ...prevState,
             errors: error.response.data.errors,
@@ -167,13 +157,11 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
   const formRef = useRef<HTMLFormElement>(null);
 
   const GetProductImageUrl = () => {
-    // Determine the correct image URL to display
     if (imagePreviewUrl) {
-      return imagePreviewUrl; // New image selected
+      return imagePreviewUrl;
     } else if (removeImageFlag) {
-      return null; // Image marked for removal
+      return null;
     } else if (product?.product_image) {
-      // Assuming product.product_image is a path relative to storage/app/public
       return `http://127.0.0.1:8000/storage/${product.product_image}`;
     }
     return null;
@@ -192,15 +180,12 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
         product_price: product.product_price,
         product_stocks: product.product_stocks,
         product_min_threshold: product.product_min_threshold,
-        // Reset product_image and errors when a new product is loaded for editing
         product_image: null,
         errors: {} as ProductFieldErrors,
       }));
-      // Set initial image preview if product has an image
       setImagePreviewUrl(product.product_image ? `http://127.0.0.1:8000/storage/${product.product_image}` : null);
-      setRemoveImageFlag(false); // Reset remove flag
+      setRemoveImageFlag(false);
     } else {
-      // Clear all state if product becomes null (e.g., closing the modal)
       setState((prevState) => ({
         ...prevState,
         product_id: 0,
@@ -222,7 +207,7 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
         formRef.current.requestSubmit();
       }
     };
-  }, [product, setSubmitForm]); // Depend on 'product' and 'setSubmitForm'
+  }, [product, setSubmitForm]);
 
   return (
     <>
@@ -242,7 +227,7 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
               <label htmlFor="product_price" className="form-label">Price</label>
               <div className="input-group">
                 <span className="input-group-text" id="Peso">₱</span>
-                <input type="text" className={`form-control ${state.errors.product_price ? "is-invalid" : ""}`} id="product_price" name="product_price" aria-describedby="Peso" value={state.product_price} onChange={HandleInputChange} />
+                <input type="number" className={`form-control ${state.errors.product_price ? "is-invalid" : ""}`} id="product_price" name="product_price" aria-describedby="Peso" value={state.product_price} onChange={HandleInputChange} />
                 {state.errors.product_price && (
                   <p className="text-danger">{state.errors.product_price[0]}</p>
                 )}
@@ -278,7 +263,7 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
 
             <div className="col-3 mb-3">
               <label htmlFor="product_stocks" className="form-label">Available Stocks</label>
-              <input type="text" className={`form-control ${state.errors.product_stocks ? "is-invalid" : ""}`} id="product_stocks" name="product_stocks" value={state.product_stocks} onChange={HandleInputChange} />
+              <input type="number" className={`form-control ${state.errors.product_stocks ? "is-invalid" : ""}`} id="product_stocks" name="product_stocks" value={state.product_stocks} onChange={HandleInputChange} />
               {state.errors.product_stocks && (
                 <p className="text-danger">{state.errors.product_stocks[0]}</p>
               )}
@@ -286,14 +271,13 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
 
             <div className="col-3 mb-3">
               <label htmlFor="product_min_threshold" className="form-label">Minimum Threshold</label>
-              <input type="text" className={`form-control ${state.errors.product_min_threshold ? "is-invalid" : ""}`} id="product_min_threshold" name="product_min_threshold" value={state.product_min_threshold} onChange={HandleInputChange} />
+              <input type="number" className={`form-control ${state.errors.product_min_threshold ? "is-invalid" : ""}`} id="product_min_threshold" name="product_min_threshold" value={state.product_min_threshold} onChange={HandleInputChange} />
               {state.errors.product_min_threshold && (
                 <p className="text-danger">{state.errors.product_min_threshold[0]}</p>
               )}
             </div>
 
-            {/* Image Upload Fields */}
-            <div className="col-6 mb-3">
+            {/* <div className="col-6 mb-3">
                 <label htmlFor="product_image" className="form-label">Product Image</label>
                 <input type="file" className={`form-control ${state.errors.product_image ? "is-invalid" : ""}`} id="product_image" name="product_image" onChange={HandleFileInputChange} />
                 {state.errors.product_image && (
@@ -310,7 +294,7 @@ const EditProductForm = ({ product, setSubmitForm, setLoadingUpdate, onUpdatedPr
                 {!GetProductImageUrl() && !removeImageFlag && product?.product_image && (
                     <div className="mt-2 text-muted">No current image selected.</div>
                 )}
-            </div>
+            </div> */}
 
           </div>
         </div>

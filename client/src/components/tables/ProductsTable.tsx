@@ -3,7 +3,7 @@ import type { Products } from "../interfaces/product/Products";
 import ProductService from "../../services/ProductService";
 import ErrorHandler from "../handler/ErrorHandler";
 import Spinner from "../Spinner";
-import Placeholder from "../../assets/angels24-placeholder.png"
+// import Placeholder from "../../assets/angels24-placeholder.png"
 
 interface ProductsTableProps {
     refreshProducts: boolean;
@@ -41,13 +41,13 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
         HandleLoadProducts();
       }, [refreshProducts]);
       
-    const GetProductImageUrl = (imagePath: string | null): string => {
-        if (imagePath) {
-            const image = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
-            return `http://localhost:8000/storage/${image}`;
-        }
-        return Placeholder;
-    };
+    // const GetProductImageUrl = (imagePath: string | null): string => {
+    //     if (imagePath) {
+    //         const image = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+    //         return `http://localhost:8000/storage/${image}`;
+    //     }
+    //     return Placeholder;
+    // };
     
   return (
     <>
@@ -55,7 +55,7 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
             <table className="table table-striped table-hover align-middle">
                 <thead>
                     <tr>
-                        <th scope="col">Image</th>
+                        <th scope="col">ID</th>
                         <th scope="col">SKU</th>
                         <th scope="col">Category</th>
                         <th scope="col">Name</th>
@@ -75,11 +75,12 @@ const ProductsTable = ({refreshProducts, onEditProduct, onDeleteProduct}: Produc
                     ) : state.products.length > 0 ? (
                         state.products.map((product) => (
                             <tr key={product.product_id}>
-                                <td>
+                                {/* <td>
                                     <div style={{ width: '50px', height: '50px', overflow: 'hidden', borderRadius: '5px' }}>
                                         <img src={GetProductImageUrl(product.product_image)} alt={product.product_name} className="img-fluid" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
                                     </div>
-                                </td>
+                                </td> */}
+                                <td>{product.product_id}</td>
                                 <td>{product.product_sku}</td>
                                 <td>{product.category.category}</td>
                                 <td>{product.product_name}</td>

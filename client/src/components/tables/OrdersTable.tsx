@@ -1,24 +1,18 @@
-// Interface for items in the local cart state
 interface LocalCartItem {
-    localId: string; // Unique ID for React key prop and easy removal from cart
+    localId: string;
     product_id: number;
     product_name: string;
-    unit_price: number; // Price of the product when added
+    unit_price: number;
     quantity: number;
-    discount_percentage: number; // Discount applied to this specific item
-    subtotal_price: number; // Calculated subtotal for this cart item
+    discount_percentage: number;
+    subtotal_price: number;
 }
 
-// Props for the OrdersTable component
 interface OrdersTableProps {
     items: LocalCartItem[];
     onRemoveItem: (localId: string) => void;
 }
 
-/**
- * OrdersTable component displays the list of products added to the current order (the cart).
- * It shows details like product name, quantity, price, discount, subtotal, and an action to remove items.
- */
 const OrdersTable = ({ items, onRemoveItem }: OrdersTableProps) => {
     return (
         <div className="table-responsive">

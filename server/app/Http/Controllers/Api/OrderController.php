@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -15,6 +16,16 @@ class OrderController extends Controller
     public function LoadOrders()
     {
         $orders = Order::all();
+        $isAuthenticated = Auth::check();
+
+        // If not authenticated, redact sensitive data from each order
+        if (!$isAuthenticated) {
+            $orders->each(function ($order) {
+                $order->customer_name = '[Redacted]';
+                $order->total_price = 0;
+            });
+        }
+
         return response()->json([
             'orders' => $orders
         ], 200);
@@ -28,6 +39,14 @@ class OrderController extends Controller
             return response()->json([
                 'message' => 'Order not found.'
             ], 404);
+        }
+
+        $isAuthenticated = Auth::check();
+
+        // If not authenticated, redact sensitive data from the single order
+        if (!$isAuthenticated) {
+            $order->customer_name = '[Redacted]';
+            $order->total_price = 0;
         }
 
         return response()->json([

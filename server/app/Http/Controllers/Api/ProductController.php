@@ -42,7 +42,7 @@ class ProductController extends Controller
             'product_stocks'        => ['required'],
             'product_min_threshold' => ['nullable'],
         ]);
-
+        // The image is broken after the login commit. At least its nullable though.
         $image = null;
 
         if ($request->hasFile('product_image')) {
